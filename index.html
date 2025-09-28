@@ -72,8 +72,16 @@
       text-shadow:3px 3px 6px rgba(0,0,0,.3);animation:titlePulse 2s ease-in-out infinite alternate
     }
     @keyframes titlePulse{from{transform:scale(1)}to{transform:scale(1.05)}}
+
+    /* ICONS: now VERTICAL alignment */
     .icons-container{
-      display:flex;justify-content:center;gap:clamp(14px, 5vw, 40px);flex-wrap:wrap;margin: clamp(28px, 9vw, 60px) 0;
+      display:flex;
+      flex-direction: column;          /* <- vertical stack */
+      align-items: center;             /* center horizontally */
+      justify-content: flex-start;
+      gap: clamp(14px, 5vw, 28px);     /* vertical spacing */
+      margin: clamp(28px, 9vw, 48px) auto;
+      width: min(92vw, 520px);         /* keep a nice column width */
     }
     .icon-item{
       background:rgba(255,255,255,.9);
@@ -141,13 +149,11 @@
 
     /* Letter Modal (FULL modal background with picture3.jpg) */
     #letter-modal{
-      /* use the image as the entire modal backdrop */
       background-image: url('picture3.jpg');
       background-size: cover;
       background-position: center;
       position: fixed;
     }
-    /* add a dim + blur layer over the full image for readability */
     #letter-modal::before{
       content:"";
       position:absolute; inset:0;
@@ -156,7 +162,6 @@
       -webkit-backdrop-filter: blur(3px);
       z-index:0;
     }
-    /* keep modal body above the background layers */
     #letter-modal .modal-content{
       background: transparent;
       position: relative;
@@ -165,7 +170,6 @@
       max-height: 90vh;
       -webkit-overflow-scrolling: touch;
     }
-    /* close button visible on photo bg */
     #letter-modal .close-btn{ color:#f5f5f5; text-shadow:0 2px 8px rgba(0,0,0,.45) }
 
     .letter-container{max-width:600px;margin:0 auto;position:relative;z-index:1; padding: clamp(6px, 2vw, 10px)}
@@ -176,7 +180,7 @@
     }
     .letter-signature{text-align:right;margin-top: clamp(16px, 3.8vw, 30px); font-style:italic; color:#d63384; font-size: clamp(1rem, 3.8vw, 1.2rem)}
 
-    /* ===== PIN keypad (CIRCLE DOTS, not shaded until filled) ===== */
+    /* ===== PIN keypad (CIRCLE DOTS) ===== */
     .pin-dots{
       display:flex;justify-content:center;
       gap: clamp(6px, 2.4vw, 10px); margin: 10px 0 14px
@@ -185,13 +189,13 @@
       width: clamp(18px, 5.6vw, 24px);
       height: clamp(18px, 5.6vw, 24px);
       border-radius: 50%;
-      border: 2px solid #ff9fc3;           /* empty ring */
-      background: transparent;              /* not shaded initially */
+      border: 2px solid #ff9fc3;
+      background: transparent;
       box-shadow: 0 1px 2px rgba(214,51,132,.15) inset, 0 1px 2px rgba(0,0,0,.06);
       transition: background .2s ease, border-color .2s ease, transform .2s ease;
     }
     .pin-dot.filled{
-      background: #d63384;                  /* filled when digit entered */
+      background: #d63384;
       border-color: #d63384;
       transform: scale(1.05);
       box-shadow: 0 2px 6px rgba(214,51,132,.35);
@@ -233,8 +237,6 @@
     /* Extra-small phones (down to ~320px) */
     @media (max-width:360px){
       .login-box{padding:16px; border-radius:14px}
-      .icons-container{gap:12px}
-      .icon-item{box-shadow:0 8px 18px rgba(0,0,0,.16)}
       .modal-content{width:96vw; padding:14px; border-radius:14px}
       .keypad{
         grid-template-columns: repeat(3, minmax(58px, 1fr));
