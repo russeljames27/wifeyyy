@@ -105,10 +105,7 @@
       overscroll-behavior: contain;
     }
     @keyframes slideIn{from{opacity:0;transform:translate(-50%,-60%)}to{opacity:1;transform:translate(-50%,-50%)}}
-    .close-btn{position:absolute;top:12px;right:16px;font-size:2rem;cursor:pointer;color:#fafafa;line-height:1}
-    /* make close button always visible over dark bg or letter bg */
-    .modal .close-btn{color:#666}
-    #letter-modal .close-btn{color:#f5f5f5; text-shadow:0 2px 8px rgba(0,0,0,.45)}
+    .close-btn{position:absolute;top:12px;right:16px;font-size:2rem;cursor:pointer;color:#666;line-height:1}
     .close-btn:hover{opacity:.85}
 
     /* Photo Modal */
@@ -142,33 +139,63 @@
     }
     .play-btn:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(214,51,132,.28)}
 
-    /* Letter Modal */
+    /* Letter Modal (FULL modal background with picture3.jpg) */
+    #letter-modal{
+      /* use the image as the entire modal backdrop */
+      background-image: url('picture3.jpg');
+      background-size: cover;
+      background-position: center;
+      position: fixed;
+    }
+    /* add a dim + blur layer over the full image for readability */
+    #letter-modal::before{
+      content:"";
+      position:absolute; inset:0;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      z-index:0;
+    }
+    /* keep modal body above the background layers */
+    #letter-modal .modal-content{
+      background: transparent;
+      position: relative;
+      z-index: 1;
+      overflow-y: auto;
+      max-height: 90vh;
+      -webkit-overflow-scrolling: touch;
+    }
+    /* close button visible on photo bg */
+    #letter-modal .close-btn{ color:#f5f5f5; text-shadow:0 2px 8px rgba(0,0,0,.45) }
+
     .letter-container{max-width:600px;margin:0 auto;position:relative;z-index:1; padding: clamp(6px, 2vw, 10px)}
     .letter-title{color:#ffd9e9;font-size:var(--font-h2);text-align:center;margin-bottom: clamp(14px, 3.8vw, 22px); text-shadow:0 2px 8px rgba(0,0,0,.45)}
     .letter-content{
       font-size:var(--font-body); line-height:1.8; color:#333; text-align:justify; padding: clamp(14px, 3.6vw, 20px);
-      background:rgba(255,255,255,.9); border-radius: var(--radius-lg); border-left:5px solid #d63384;
+      background:rgba(255,255,255,.92); border-radius: var(--radius-lg); border-left:5px solid #d63384;
     }
     .letter-signature{text-align:right;margin-top: clamp(16px, 3.8vw, 30px); font-style:italic; color:#d63384; font-size: clamp(1rem, 3.8vw, 1.2rem)}
-    /* Background image + blur/dark for letter modal */
-    #letter-modal .modal-content{
-      background:transparent;
-      overflow-y:auto;
-      max-height:90vh;
-      -webkit-overflow-scrolling:touch;
-      position:relative;
-    }
-    #letter-modal .modal-content::before{
-      content:"";position:absolute;inset:0;
-      background-image:url('picture3.jpg'); background-size:cover; background-position:center;
-      filter: blur(4px) brightness(0.6); transform:scale(1.05); z-index:0;
-    }
 
-    /* ===== PIN keypad (circles) ===== */
-    .pin-dots{display:flex;justify-content:center;gap: clamp(6px, 2.4vw, 10px); margin: 10px 0 14px}
-    .pin-dot{width: clamp(18px, 5.6vw, 24px); height: clamp(18px, 5.6vw, 24px); display:inline-flex; align-items:center; justify-content:center; filter:drop-shadow(0 2px 4px rgba(214,51,132,.25))}
-    .pin-dot::before{content:"❤";font-size: clamp(16px, 5vw, 22px); line-height:1; color:#ffd3e3; transition:transform .2s ease,color .2s ease}
-    .pin-dot.filled::before{color:#d63384;transform:scale(1.08)}
+    /* ===== PIN keypad (CIRCLE DOTS, not shaded until filled) ===== */
+    .pin-dots{
+      display:flex;justify-content:center;
+      gap: clamp(6px, 2.4vw, 10px); margin: 10px 0 14px
+    }
+    .pin-dot{
+      width: clamp(18px, 5.6vw, 24px);
+      height: clamp(18px, 5.6vw, 24px);
+      border-radius: 50%;
+      border: 2px solid #ff9fc3;           /* empty ring */
+      background: transparent;              /* not shaded initially */
+      box-shadow: 0 1px 2px rgba(214,51,132,.15) inset, 0 1px 2px rgba(0,0,0,.06);
+      transition: background .2s ease, border-color .2s ease, transform .2s ease;
+    }
+    .pin-dot.filled{
+      background: #d63384;                  /* filled when digit entered */
+      border-color: #d63384;
+      transform: scale(1.05);
+      box-shadow: 0 2px 6px rgba(214,51,132,.35);
+    }
     .pin-dots.shake{animation:shake .5s ease-in-out}
 
     .keypad{
@@ -186,9 +213,8 @@
       background:radial-gradient(circle at 30% 30%,#ff8bb3,#d63384);
       border-radius:50%; box-shadow:0 10px 22px rgba(214,51,132,.22);
       transition:transform .12s ease,filter .12s ease,box-shadow .12s ease;
-      touch-action: manipulation; /* improves tap responsiveness */
+      touch-action: manipulation;
     }
-    .heart-key::before,.heart-key::after{display:none}
     .heart-key .num{
       position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
       color:#fff; font-weight:800; font-size: clamp(1rem, 4.2vw, 1.25rem); text-shadow:0 1px 0 rgba(0,0,0,.15); user-select:none
@@ -417,6 +443,9 @@
     });
 
     function checkPassword(){ verifyPin(); } // compatibility
+
+    // Call once to ensure dots start unfilled
+    document.addEventListener('DOMContentLoaded', updateDots);
 
     // Modals
     function openModal(id){
